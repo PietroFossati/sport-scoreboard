@@ -87,7 +87,7 @@
                 team1: { games: 0, sets: 0, points: 0 },
                 team2: { games: 0, sets: 0, points: 0 }
             });
-            
+            const [setScores, setSetScores] = useState([]); // nuovo stato per tracciare i punteggi dei set
             const [gameHistory, setGameHistory] = useState([]);
             const [matchComplete, setMatchComplete] = useState(false);
             const [winner, setWinner] = useState(null);
@@ -140,6 +140,15 @@
                     const setWinner = checkSetWin(newScore.team1.games, newScore.team2.games);
                     
                     if (setWinner) {
+                        // Salva prima di azzerare i game
+                        const finalSetScore = {
+                            team1: newScore.team1.games,
+                            team2: newScore.team2.games
+                        };
+
+                        // Aggiungi alla lista dei set
+                        setSetScores(prev => [...prev, finalSetScore]);
+
                         // Set vinto
                         newScore[setWinner].sets++;
                         newScore.team1.games = 0;
@@ -193,6 +202,7 @@
                     team1: { games: 0, sets: 0, points: 0 },
                     team2: { games: 0, sets: 0, points: 0 }
                 });
+                setSetScores([]); // reset anche dei punteggi dei set
                 setGameHistory([]);
                 setMatchComplete(false);
                 setWinner(null);
@@ -208,32 +218,33 @@
             };
 
             return (
-                <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-4">
+                <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-2 sm:p-4">
                     <div className="max-w-4xl mx-auto">
                         {/* Header */}
-                        <div className="text-center mb-8">
-                            <div className="flex items-center justify-center gap-3 mb-4">
-                                <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full">
-                                    <Trophy className="h-8 w-8 text-white" />
+                        <div className="text-center mb-4 sm:mb-8">
+                            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                                <div className="p-2 sm:p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full">
+                                    <Trophy className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                                 </div>
-                                <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                                <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                                     Padel Scoreboard
                                 </h1>
                             </div>
                             
-                            <div className="flex items-center justify-center gap-4 mb-6">
+                            <div className="flex items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-6">
                                 <button
                                     onClick={() => setShowSettings(!showSettings)}
-                                    className="flex items-center gap-2 px-4 py-2 glassmorphism rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                                    className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 glassmorphism rounded-full shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base"
                                 >
-                                    <Settings className="h-4 w-4" />
-                                    Impostazioni
+                                    <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
+                                    <span className="hidden sm:inline">Impostazioni</span>
+                                    <span className="sm:hidden">Setup</span>
                                 </button>
                                 <button
                                     onClick={resetMatch}
-                                    className="flex items-center gap-2 px-4 py-2 glassmorphism rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                                    className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 glassmorphism rounded-full shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base"
                                 >
-                                    <RotateCcw className="h-4 w-4" />
+                                    <RotateCcw className="h-3 w-3 sm:h-4 sm:w-4" />
                                     Reset
                                 </button>
                             </div>
@@ -241,7 +252,7 @@
 
                         {/* Settings Panel */}
                         {showSettings && (
-                            <div className="glassmorphism rounded-2xl p-6 mb-6 shadow-xl">
+                            <div className="glassmorphism rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 shadow-xl">
                                 <h3 className="text-lg font-semibold mb-4 text-gray-800">Configurazione Match</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
@@ -279,21 +290,21 @@
 
                         {/* Winner Banner */}
                         {matchComplete && winner && (
-                            <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl p-6 mb-6 text-center shadow-2xl animate-pulse">
-                                <Trophy className="h-12 w-12 mx-auto mb-3 text-white" />
-                                <h2 className="text-3xl font-bold text-white mb-2">🏆 VITTORIA! 🏆</h2>
-                                <p className="text-xl text-white/90">Congratulazioni a <strong>{winner}</strong>!</p>
+                            <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 text-center shadow-2xl animate-pulse">
+                                <Trophy className="h-8 w-8 sm:h-12 sm:w-12 mx-auto mb-2 sm:mb-3 text-white" />
+                                <h2 className="text-xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">🏆 VITTORIA! 🏆</h2>
+                                <p className="text-sm sm:text-xl text-white/90">Congratulazioni a <strong>{winner}</strong>!</p>
                             </div>
                         )}
 
                         {/* Main Scoreboard */}
-                        <div className="glassmorphism rounded-3xl shadow-2xl overflow-hidden mb-6">
+                        <div className="glassmorphism rounded-3xl shadow-2xl overflow-hidden mb-4 sm:mb-6">
                             {/* Match Info */}
-                            <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white p-4 text-center">
-                                <div className="flex justify-center items-center gap-4">
-                                    <span className="text-sm opacity-90">Best of {maxSets}</span>
+                            <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white p-3 sm:p-4 text-center">
+                                <div className="flex justify-center items-center gap-2 sm:gap-4">
+                                    <span className="text-xs sm:text-sm opacity-90">Best of {maxSets}</span>
                                     {getDeuceSituation() && (
-                                        <span className="px-3 py-1 bg-white/20 rounded-full text-sm font-semibold">
+                                        <span className="px-2 sm:px-3 py-1 bg-white/20 rounded-full text-xs sm:text-sm font-semibold">
                                             {getDeuceSituation()}
                                         </span>
                                     )}
@@ -303,99 +314,101 @@
                             {/* Score Display */}
                             <div className="grid grid-cols-2 divide-x divide-gray-200">
                                 {/* Team 1 */}
-                                <div className="p-8">
-                                    <div className="text-center mb-6">
-                                        <div className="flex items-center justify-center gap-2 mb-3">
-                                            <Users className="h-5 w-5 text-emerald-600" />
-                                            <h3 className="text-xl font-bold text-gray-800">{team1Name}</h3>
+                                <div className="p-3 sm:p-8">
+                                    <div className="text-center mb-4 sm:mb-6">
+                                        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-2 sm:mb-3">
+                                            <Users className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" />
+                                            <h3 className="text-sm sm:text-xl font-bold text-gray-800 truncate">{team1Name}</h3>
                                         </div>
                                         
                                         {/* Sets */}
-                                        <div className="mb-4">
-                                            <span className="text-sm text-gray-600 block">Set</span>
-                                            <span className="text-4xl font-bold text-emerald-600">{score.team1.sets}</span>
+                                        <div className="mb-2 sm:mb-4">
+                                            <span className="text-xs sm:text-sm text-gray-600 block">Set</span>
+                                            <span className="text-2xl sm:text-4xl font-bold text-emerald-600">{score.team1.sets}</span>
                                         </div>
                                         
                                         {/* Games */}
-                                        <div className="mb-4">
-                                            <span className="text-sm text-gray-600 block">Game</span>
-                                            <span className="text-3xl font-bold text-gray-800">{score.team1.games}</span>
+                                        <div className="mb-2 sm:mb-4">
+                                            <span className="text-xs sm:text-sm text-gray-600 block">Game</span>
+                                            <span className="text-xl sm:text-3xl font-bold text-gray-800">{score.team1.games}</span>
                                         </div>
                                         
                                         {/* Points */}
-                                        <div className="mb-6">
-                                            <span className="text-sm text-gray-600 block">Punti</span>
-                                            <span className="text-2xl font-bold text-gray-700">
+                                        <div className="mb-3 sm:mb-6">
+                                            <span className="text-xs sm:text-sm text-gray-600 block">Punti</span>
+                                            <span className="text-lg sm:text-2xl font-bold text-gray-700">
                                                 {getPointDisplay(score.team1.points)}
                                             </span>
                                         </div>
                                     </div>
 
                                     {/* Controls */}
-                                    <div className="flex justify-center gap-3">
+                                    <div className="flex justify-center gap-2 sm:gap-3">
                                         <button
                                             onClick={() => addPoint('team1')}
                                             disabled={matchComplete}
-                                            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none"
+                                            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none text-sm sm:text-base"
                                         >
-                                            <Plus className="h-5 w-5" />
-                                            Punto
+                                            <Plus className="h-3 w-3 sm:h-5 sm:w-5" />
+                                            <span className="hidden sm:inline">Punto</span>
+                                            <span className="sm:hidden"></span>
                                         </button>
                                         <button
                                             onClick={() => removePoint('team1')}
                                             disabled={matchComplete || gameHistory.length === 0}
-                                            className="flex items-center gap-2 px-4 py-3 bg-gray-200 text-gray-700 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none"
+                                            className="flex items-center gap-1 px-2 sm:px-4 py-2 sm:py-3 bg-gray-200 text-gray-700 rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none"
                                         >
-                                            <Minus className="h-4 w-4" />
+                                            <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
                                         </button>
                                     </div>
                                 </div>
 
                                 {/* Team 2 */}
-                                <div className="p-8">
-                                    <div className="text-center mb-6">
-                                        <div className="flex items-center justify-center gap-2 mb-3">
-                                            <Users className="h-5 w-5 text-teal-600" />
-                                            <h3 className="text-xl font-bold text-gray-800">{team2Name}</h3>
+                                <div className="p-3 sm:p-8">
+                                    <div className="text-center mb-4 sm:mb-6">
+                                        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-2 sm:mb-3">
+                                            <Users className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
+                                            <h3 className="text-sm sm:text-xl font-bold text-gray-800 truncate">{team2Name}</h3>
                                         </div>
                                         
                                         {/* Sets */}
-                                        <div className="mb-4">
-                                            <span className="text-sm text-gray-600 block">Set</span>
-                                            <span className="text-4xl font-bold text-teal-600">{score.team2.sets}</span>
+                                        <div className="mb-2 sm:mb-4">
+                                            <span className="text-xs sm:text-sm text-gray-600 block">Set</span>
+                                            <span className="text-2xl sm:text-4xl font-bold text-teal-600">{score.team2.sets}</span>
                                         </div>
                                         
                                         {/* Games */}
-                                        <div className="mb-4">
-                                            <span className="text-sm text-gray-600 block">Game</span>
-                                            <span className="text-3xl font-bold text-gray-800">{score.team2.games}</span>
+                                        <div className="mb-2 sm:mb-4">
+                                            <span className="text-xs sm:text-sm text-gray-600 block">Game</span>
+                                            <span className="text-xl sm:text-3xl font-bold text-gray-800">{score.team2.games}</span>
                                         </div>
                                         
                                         {/* Points */}
-                                        <div className="mb-6">
-                                            <span className="text-sm text-gray-600 block">Punti</span>
-                                            <span className="text-2xl font-bold text-gray-700">
+                                        <div className="mb-3 sm:mb-6">
+                                            <span className="text-xs sm:text-sm text-gray-600 block">Punti</span>
+                                            <span className="text-lg sm:text-2xl font-bold text-gray-700">
                                                 {getPointDisplay(score.team2.points)}
                                             </span>
                                         </div>
                                     </div>
 
                                     {/* Controls */}
-                                    <div className="flex justify-center gap-3">
+                                    <div className="flex justify-center gap-2 sm:gap-3">
                                         <button
                                             onClick={() => addPoint('team2')}
                                             disabled={matchComplete}
-                                            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none"
+                                            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none text-sm sm:text-base"
                                         >
-                                            <Plus className="h-5 w-5" />
-                                            Punto
+                                            <Plus className="h-3 w-3 sm:h-5 sm:w-5" />
+                                            <span className="hidden sm:inline">Punto</span>
+                                            <span className="sm:hidden"></span>
                                         </button>
                                         <button
                                             onClick={() => removePoint('team2')}
                                             disabled={matchComplete || gameHistory.length === 0}
-                                            className="flex items-center gap-2 px-4 py-3 bg-gray-200 text-gray-700 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none"
+                                            className="flex items-center gap-1 px-2 sm:px-4 py-2 sm:py-3 bg-gray-200 text-gray-700 rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none"
                                         >
-                                            <Minus className="h-4 w-4" />
+                                            <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
                                         </button>
                                     </div>
                                 </div>
@@ -403,27 +416,43 @@
                         </div>
 
                         {/* Match Statistics */}
-                        <div className="glassmorphism rounded-2xl p-6 shadow-xl">
-                            <h3 className="text-lg font-semibold mb-4 text-gray-800 text-center">Statistiche Match</h3>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                                <div className="p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl">
-                                    <div className="text-2xl font-bold text-emerald-600">{score.team1.sets}</div>
-                                    <div className="text-sm text-gray-600">Set {team1Name}</div>
+                        <div className="glassmorphism rounded-2xl p-4 sm:p-6 shadow-xl">
+                            <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-800 text-center">Statistiche Match</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 text-center">
+                                <div className="p-3 sm:p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl">
+                                    <div className="text-xl sm:text-2xl font-bold text-emerald-600">{score.team1.sets}</div>
+                                    <div className="text-xs sm:text-sm text-gray-600">Set {team1Name}</div>
                                 </div>
-                                <div className="p-4 bg-gradient-to-br from-teal-50 to-teal-100 rounded-xl">
-                                    <div className="text-2xl font-bold text-teal-600">{score.team2.sets}</div>
-                                    <div className="text-sm text-gray-600">Set {team2Name}</div>
+                                <div className="p-3 sm:p-4 bg-gradient-to-br from-teal-50 to-teal-100 rounded-xl">
+                                    <div className="text-xl sm:text-2xl font-bold text-teal-600">{score.team2.sets}</div>
+                                    <div className="text-xs sm:text-sm text-gray-600">Set {team2Name}</div>
                                 </div>
-                                <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
-                                    <div className="text-2xl font-bold text-blue-600">{gameHistory.length}</div>
-                                    <div className="text-sm text-gray-600">Punti Totali</div>
+                                <div className="p-3 sm:p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
+                                    <div className="text-xl sm:text-2xl font-bold text-blue-600">{gameHistory.length}</div>
+                                    <div className="text-xs sm:text-sm text-gray-600">Punti Totali</div>
                                 </div>
-                                <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
-                                    <div className="text-2xl font-bold text-purple-600">{score.team1.games + score.team2.games}</div>
-                                    <div className="text-sm text-gray-600">Game Giocati</div>
+                                <div className="p-3 sm:p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
+                                    <div className="text-xl sm:text-2xl font-bold text-purple-600">{score.team1.games + score.team2.games}</div>
+                                    <div className="text-xs sm:text-sm text-gray-600">Game Giocati</div>
                                 </div>
                             </div>
                         </div>
+
+                        {/* Set Details */}
+                        {setScores.length > 0 && (
+                            <div className="mt-4">
+                                <h4 className="text-sm sm:text-base font-semibold text-gray-700 text-center mb-2">Dettaglio Set</h4>
+                                <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 text-sm sm:text-base text-gray-800">
+                                    {setScores.map((set, index) => (
+                                        <div key={index} className="px-3 py-2 bg-white/60 rounded-xl shadow text-center min-w-[80px]">
+                                            <div className="font-semibold text-gray-600">Set {index + 1}</div>
+                                            <div className="font-bold">{set.team1} – {set.team2}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                     </div>
                 </div>
             );
