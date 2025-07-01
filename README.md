@@ -8,9 +8,7 @@ Un contapunti **moderno, intuitivo e responsive** per partite di padel. Interfac
 
 ## 🚀 Demo Live
 
-🌐 **[Prova l'App Online](https://tuousername.github.io/padel-scoreboard)**
-
-*Sostituisci `tuousername` con il tuo username GitHub*
+🌐 **[Prova l'App Online](https://pietrofossati.github.io/sport-scoreboard)**
 
 ---
 
