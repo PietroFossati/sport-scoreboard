@@ -3,32 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Padel Scoreboard - Contapunti Professionale</title>
-    <meta name="description" content="Contapunti professionale per partite di padel. Interfaccia intuitiva e moderna per tenere il punteggio.">
+    <title>Padel Scoreboard Responsive</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    animation: {
-                        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    }
-                }
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Layout Desktop/Tablet (default) */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            min-height: 600px;
+            padding: 20px;
+            border-radius: 20px;
+            position: relative;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .player-section h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            margin-bottom: 20px;
+        }
+
+        .score-display .label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .score-display .value {
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .score-display .value.sets.p1 { color: #4ade80; }
+        .score-display .value.sets.p2 { color: #06b6d4; }
+
+        .score-display .value.games { font-size: 32px; }
+        .score-display .value.points { font-size: 28px; }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-plus, .btn-minus {
+            border: none;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-plus {
+            width: 60px;
+            height: 60px;
+            font-size: 32px;
+        }
+
+        .btn-plus.p1 { background: #4ade80; }
+        .btn-plus.p2 { background: #06b6d4; }
+
+        .btn-minus {
+            width: 45px;
+            height: 45px;
+            font-size: 24px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .top-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .reset-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .winner-banner {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 215, 0, 0.9);
+            color: black;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .deuce-indicator {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* Media Query per Display Circolare (400x400 o meno) */
+        @media (max-width: 450px), (max-height: 450px) {
+            body {
+                background: linear-gradient(135deg, #1e3c72, #2a5298);
+                width: 400px;
+                height: 400px;
+                overflow: hidden;
+                border-radius: 50%;
+            }
+
+            .container {
+                width: 400px;
+                height: 400px;
+                border-radius: 50%;
+                overflow: hidden;
+                padding: 0;
+                min-height: unset;
+                max-width: unset;
+            }
+
+            .score-grid {
+                gap: 20px;
+                width: 350px;
+                max-width: unset;
+            }
+
+            .player-section h2 {
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+
+            .score-display {
+                margin-bottom: 15px;
+            }
+
+            .score-display .label {
+                font-size: 12px;
+            }
+
+            .score-display .value {
+                font-size: 36px;
+            }
+
+            .score-display .value.games {
+                font-size: 24px;
+            }
+
+            .score-display .value.points {
+                font-size: 20px;
+            }
+
+            .controls {
+                gap: 8px;
+            }
+
+            .btn-plus {
+                width: 45px;
+                height: 45px;
+                font-size: 24px;
+            }
+
+            .btn-minus {
+                width: 35px;
+                height: 35px;
+                font-size: 20px;
+            }
+
+            .top-controls {
+                top: 10px;
+                right: 10px;
+            }
+
+            .reset-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .winner-banner {
+                top: 20px;
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+
+            .deuce-indicator {
+                bottom: 40px;
+                padding: 6px 12px;
+                font-size: 12px;
             }
         }
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .glassmorphism {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+
+        /* Media Query per schermi molto piccoli (sotto 350px) */
+        @media (max-width: 350px), (max-height: 350px) {
+            body {
+                width: 300px;
+                height: 300px;
+            }
+
+            .container {
+                width: 300px;
+                height: 300px;
+            }
+
+            .score-grid {
+                width: 260px;
+                gap: 15px;
+            }
+
+            .score-display .value {
+                font-size: 28px;
+            }
+
+            .score-display .value.games {
+                font-size: 20px;
+            }
+
+            .score-display .value.points {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -36,63 +270,16 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
-
-        // Componenti icone inline
-        const Trophy = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-            </svg>
-        );
-
-        const Users = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-            </svg>
-        );
-
-        const RotateCcw = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-            </svg>
-        );
-
-        const Settings = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-        );
-
-        const Plus = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-        );
-
-        const Minus = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-            </svg>
-        );
+        const { useState } = React;
 
         function PadelScoreboard() {
-            const [maxSets, setMaxSets] = useState(3);
-            const [team1Name, setTeam1Name] = useState('Squadra 1');
-            const [team2Name, setTeam2Name] = useState('Squadra 2');
-            const [showSettings, setShowSettings] = useState(false);
-            
-            // Stato del punteggio
             const [score, setScore] = useState({
                 team1: { games: 0, sets: 0, points: 0 },
                 team2: { games: 0, sets: 0, points: 0 }
             });
-            const [setScores, setSetScores] = useState([]); // nuovo stato per tracciare i punteggi dei set
-            const [gameHistory, setGameHistory] = useState([]);
             const [matchComplete, setMatchComplete] = useState(false);
             const [winner, setWinner] = useState(null);
             
-            // Sistema di punteggio padel: 0, 15, 30, 40, Deuce, Advantage
             const getPointDisplay = (points) => {
                 const pointsMap = { 0: '0', 1: '15', 2: '30', 3: '40' };
                 return pointsMap[points] || '40';
@@ -100,8 +287,7 @@
             
             const checkGameWin = (team1Points, team2Points) => {
                 if (team1Points >= 3 && team2Points >= 3) {
-                    // Situazione deuce/advantage
-                    if (team1Points === team2Points) return null; // Deuce
+                    if (team1Points === team2Points) return null;
                     return team1Points > team2Points ? (team1Points - team2Points >= 2 ? 'team1' : null) : 
                            (team2Points - team1Points >= 2 ? 'team2' : null);
                 }
@@ -110,7 +296,6 @@
             
             const checkSetWin = (team1Games, team2Games) => {
                 if (team1Games >= 6 && team2Games >= 6) {
-                    // Tiebreak situation (7-6 win)
                     return team1Games >= 7 && team1Games - team2Games >= 1 ? 'team1' :
                            team2Games >= 7 && team2Games - team1Games >= 1 ? 'team2' : null;
                 }
@@ -119,8 +304,7 @@
             };
             
             const checkMatchWin = (team1Sets, team2Sets) => {
-                const setsToWin = Math.ceil(maxSets / 2);
-                return team1Sets >= setsToWin ? 'team1' : team2Sets >= setsToWin ? 'team2' : null;
+                return team1Sets >= 2 ? 'team1' : team2Sets >= 2 ? 'team2' : null;
             };
             
             const addPoint = (team) => {
@@ -132,7 +316,6 @@
                 const gameWinner = checkGameWin(newScore.team1.points, newScore.team2.points);
                 
                 if (gameWinner) {
-                    // Game vinto
                     newScore[gameWinner].games++;
                     newScore.team1.points = 0;
                     newScore.team2.points = 0;
@@ -140,16 +323,6 @@
                     const setWinner = checkSetWin(newScore.team1.games, newScore.team2.games);
                     
                     if (setWinner) {
-                        // Salva prima di azzerare i game
-                        const finalSetScore = {
-                            team1: newScore.team1.games,
-                            team2: newScore.team2.games
-                        };
-
-                        // Aggiungi alla lista dei set
-                        setSetScores(prev => [...prev, finalSetScore]);
-
-                        // Set vinto
                         newScore[setWinner].sets++;
                         newScore.team1.games = 0;
                         newScore.team2.games = 0;
@@ -157,22 +330,17 @@
                         const matchWinner = checkMatchWin(newScore.team1.sets, newScore.team2.sets);
                         
                         if (matchWinner) {
-                            // Match vinto
                             setMatchComplete(true);
-                            setWinner(matchWinner === 'team1' ? team1Name : team2Name);
+                            setWinner(matchWinner === 'team1' ? 'P1' : 'P2');
                         }
                     }
                 }
                 
                 setScore(newScore);
-                setGameHistory([...gameHistory, { team, timestamp: Date.now() }]);
             };
             
             const removePoint = (team) => {
-                if (matchComplete || gameHistory.length === 0) return;
-                
-                const lastAction = gameHistory[gameHistory.length - 1];
-                if (lastAction.team !== team) return;
+                if (matchComplete) return;
                 
                 const newScore = { ...score };
                 
@@ -180,7 +348,6 @@
                     newScore[team].points--;
                 } else if (newScore[team].games > 0) {
                     newScore[team].games--;
-                    // Ripristina i punti del game precedente (semplificato)
                     newScore.team1.points = 0;
                     newScore.team2.points = 0;
                 } else if (newScore[team].sets > 0) {
@@ -192,7 +359,6 @@
                 }
                 
                 setScore(newScore);
-                setGameHistory(gameHistory.slice(0, -1));
                 setMatchComplete(false);
                 setWinner(null);
             };
@@ -202,258 +368,134 @@
                     team1: { games: 0, sets: 0, points: 0 },
                     team2: { games: 0, sets: 0, points: 0 }
                 });
-                setSetScores([]); // reset anche dei punteggi dei set
-                setGameHistory([]);
                 setMatchComplete(false);
                 setWinner(null);
             };
-            
-            const getDeuceSituation = () => {
-                const { team1, team2 } = score;
-                if (team1.points >= 3 && team2.points >= 3) {
-                    if (team1.points === team2.points) return 'Deuce';
-                    return team1.points > team2.points ? `Adv ${team1Name}` : `Adv ${team2Name}`;
-                }
-                return null;
-            };
 
             return (
-                <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-2 sm:p-4">
-                    <div className="max-w-4xl mx-auto">
-                        {/* Header */}
-                        <div className="text-center mb-4 sm:mb-8">
-                            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                                <div className="p-2 sm:p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full">
-                                    <Trophy className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
+                <div className="container">
+                    {/* Winner */}
+                    {matchComplete && winner && (
+                        <div className="winner-banner">
+                            🏆 {winner} WINS!
+                        </div>
+                    )}
+
+                    {/* Reset Button */}
+                    <div className="top-controls">
+                        <button onClick={resetMatch} className="reset-btn">
+                            ↻
+                        </button>
+                    </div>
+
+                    {/* Main Score Display */}
+                    <div className="score-grid">
+                        {/* Player 1 */}
+                        <div className="player-section">
+                            <h2>P1</h2>
+                            
+                            {/* Sets */}
+                            <div className="score-display">
+                                <div className="label">SET</div>
+                                <div className="value sets p1">
+                                    {score.team1.sets}
                                 </div>
-                                <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                                    Padel Scoreboard
-                                </h1>
                             </div>
                             
-                            <div className="flex items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-6">
+                            {/* Games */}
+                            <div className="score-display">
+                                <div className="label">GAME</div>
+                                <div className="value games">
+                                    {score.team1.games}
+                                </div>
+                            </div>
+                            
+                            {/* Points */}
+                            <div className="score-display">
+                                <div className="label">PUNTI</div>
+                                <div className="value points">
+                                    {getPointDisplay(score.team1.points)}
+                                </div>
+                            </div>
+
+                            {/* Controls */}
+                            <div className="controls">
                                 <button
-                                    onClick={() => setShowSettings(!showSettings)}
-                                    className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 glassmorphism rounded-full shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base"
+                                    onClick={() => addPoint('team1')}
+                                    disabled={matchComplete}
+                                    className="btn-plus p1"
+                                    style={{ opacity: matchComplete ? 0.5 : 1 }}
                                 >
-                                    <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
-                                    <span className="hidden sm:inline">Impostazioni</span>
-                                    <span className="sm:hidden">Setup</span>
+                                    +
                                 </button>
                                 <button
-                                    onClick={resetMatch}
-                                    className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 glassmorphism rounded-full shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base"
+                                    onClick={() => removePoint('team1')}
+                                    disabled={matchComplete}
+                                    className="btn-minus"
+                                    style={{ opacity: matchComplete ? 0.5 : 1 }}
                                 >
-                                    <RotateCcw className="h-3 w-3 sm:h-4 sm:w-4" />
-                                    Reset
+                                    −
                                 </button>
                             </div>
                         </div>
 
-                        {/* Settings Panel */}
-                        {showSettings && (
-                            <div className="glassmorphism rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 shadow-xl">
-                                <h3 className="text-lg font-semibold mb-4 text-gray-800">Configurazione Match</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Set da giocare</label>
-                                        <select 
-                                            value={maxSets} 
-                                            onChange={(e) => setMaxSets(Number(e.target.value))}
-                                            className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                                        >
-                                            <option value={3}>Best of 3</option>
-                                            <option value={5}>Best of 5</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Nome Squadra 1</label>
-                                        <input 
-                                            type="text" 
-                                            value={team1Name}
-                                            onChange={(e) => setTeam1Name(e.target.value)}
-                                            className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">Nome Squadra 2</label>
-                                        <input 
-                                            type="text" 
-                                            value={team2Name}
-                                            onChange={(e) => setTeam2Name(e.target.value)}
-                                            className="w-full p-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                                        />
-                                    </div>
+                        {/* Player 2 */}
+                        <div className="player-section">
+                            <h2>P2</h2>
+                            
+                            {/* Sets */}
+                            <div className="score-display">
+                                <div className="label">SET</div>
+                                <div className="value sets p2">
+                                    {score.team2.sets}
                                 </div>
                             </div>
-                        )}
-
-                        {/* Winner Banner */}
-                        {matchComplete && winner && (
-                            <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 text-center shadow-2xl animate-pulse">
-                                <Trophy className="h-8 w-8 sm:h-12 sm:w-12 mx-auto mb-2 sm:mb-3 text-white" />
-                                <h2 className="text-xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">🏆 VITTORIA! 🏆</h2>
-                                <p className="text-sm sm:text-xl text-white/90">Congratulazioni a <strong>{winner}</strong>!</p>
+                            
+                            {/* Games */}
+                            <div className="score-display">
+                                <div className="label">GAME</div>
+                                <div className="value games">
+                                    {score.team2.games}
+                                </div>
                             </div>
-                        )}
-
-                        {/* Main Scoreboard */}
-                        <div className="glassmorphism rounded-3xl shadow-2xl overflow-hidden mb-4 sm:mb-6">
-                            {/* Match Info */}
-                            <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white p-3 sm:p-4 text-center">
-                                <div className="flex justify-center items-center gap-2 sm:gap-4">
-                                    <span className="text-xs sm:text-sm opacity-90">Best of {maxSets}</span>
-                                    {getDeuceSituation() && (
-                                        <span className="px-2 sm:px-3 py-1 bg-white/20 rounded-full text-xs sm:text-sm font-semibold">
-                                            {getDeuceSituation()}
-                                        </span>
-                                    )}
+                            
+                            {/* Points */}
+                            <div className="score-display">
+                                <div className="label">PUNTI</div>
+                                <div className="value points">
+                                    {getPointDisplay(score.team2.points)}
                                 </div>
                             </div>
 
-                            {/* Score Display */}
-                            <div className="grid grid-cols-2 divide-x divide-gray-200">
-                                {/* Team 1 */}
-                                <div className="p-3 sm:p-8">
-                                    <div className="text-center mb-4 sm:mb-6">
-                                        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-2 sm:mb-3">
-                                            <Users className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" />
-                                            <h3 className="text-sm sm:text-xl font-bold text-gray-800 truncate">{team1Name}</h3>
-                                        </div>
-                                        
-                                        {/* Sets */}
-                                        <div className="mb-2 sm:mb-4">
-                                            <span className="text-xs sm:text-sm text-gray-600 block">Set</span>
-                                            <span className="text-2xl sm:text-4xl font-bold text-emerald-600">{score.team1.sets}</span>
-                                        </div>
-                                        
-                                        {/* Games */}
-                                        <div className="mb-2 sm:mb-4">
-                                            <span className="text-xs sm:text-sm text-gray-600 block">Game</span>
-                                            <span className="text-xl sm:text-3xl font-bold text-gray-800">{score.team1.games}</span>
-                                        </div>
-                                        
-                                        {/* Points */}
-                                        <div className="mb-3 sm:mb-6">
-                                            <span className="text-xs sm:text-sm text-gray-600 block">Punti</span>
-                                            <span className="text-lg sm:text-2xl font-bold text-gray-700">
-                                                {getPointDisplay(score.team1.points)}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Controls */}
-                                    <div className="flex justify-center gap-2 sm:gap-3">
-                                        <button
-                                            onClick={() => addPoint('team1')}
-                                            disabled={matchComplete}
-                                            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none text-sm sm:text-base"
-                                        >
-                                            <Plus className="h-3 w-3 sm:h-5 sm:w-5" />
-                                            <span className="hidden sm:inline">Punto</span>
-                                            <span className="sm:hidden"></span>
-                                        </button>
-                                        <button
-                                            onClick={() => removePoint('team1')}
-                                            disabled={matchComplete || gameHistory.length === 0}
-                                            className="flex items-center gap-1 px-2 sm:px-4 py-2 sm:py-3 bg-gray-200 text-gray-700 rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none"
-                                        >
-                                            <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Team 2 */}
-                                <div className="p-3 sm:p-8">
-                                    <div className="text-center mb-4 sm:mb-6">
-                                        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-2 sm:mb-3">
-                                            <Users className="h-4 w-4 sm:h-5 sm:w-5 text-teal-600" />
-                                            <h3 className="text-sm sm:text-xl font-bold text-gray-800 truncate">{team2Name}</h3>
-                                        </div>
-                                        
-                                        {/* Sets */}
-                                        <div className="mb-2 sm:mb-4">
-                                            <span className="text-xs sm:text-sm text-gray-600 block">Set</span>
-                                            <span className="text-2xl sm:text-4xl font-bold text-teal-600">{score.team2.sets}</span>
-                                        </div>
-                                        
-                                        {/* Games */}
-                                        <div className="mb-2 sm:mb-4">
-                                            <span className="text-xs sm:text-sm text-gray-600 block">Game</span>
-                                            <span className="text-xl sm:text-3xl font-bold text-gray-800">{score.team2.games}</span>
-                                        </div>
-                                        
-                                        {/* Points */}
-                                        <div className="mb-3 sm:mb-6">
-                                            <span className="text-xs sm:text-sm text-gray-600 block">Punti</span>
-                                            <span className="text-lg sm:text-2xl font-bold text-gray-700">
-                                                {getPointDisplay(score.team2.points)}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Controls */}
-                                    <div className="flex justify-center gap-2 sm:gap-3">
-                                        <button
-                                            onClick={() => addPoint('team2')}
-                                            disabled={matchComplete}
-                                            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none text-sm sm:text-base"
-                                        >
-                                            <Plus className="h-3 w-3 sm:h-5 sm:w-5" />
-                                            <span className="hidden sm:inline">Punto</span>
-                                            <span className="sm:hidden"></span>
-                                        </button>
-                                        <button
-                                            onClick={() => removePoint('team2')}
-                                            disabled={matchComplete || gameHistory.length === 0}
-                                            className="flex items-center gap-1 px-2 sm:px-4 py-2 sm:py-3 bg-gray-200 text-gray-700 rounded-lg sm:rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:transform-none"
-                                        >
-                                            <Minus className="h-3 w-3 sm:h-4 sm:w-4" />
-                                        </button>
-                                    </div>
-                                </div>
+                            {/* Controls */}
+                            <div className="controls">
+                                <button
+                                    onClick={() => addPoint('team2')}
+                                    disabled={matchComplete}
+                                    className="btn-plus p2"
+                                    style={{ opacity: matchComplete ? 0.5 : 1 }}
+                                >
+                                    +
+                                </button>
+                                <button
+                                    onClick={() => removePoint('team2')}
+                                    disabled={matchComplete}
+                                    className="btn-minus"
+                                    style={{ opacity: matchComplete ? 0.5 : 1 }}
+                                >
+                                    −
+                                </button>
                             </div>
                         </div>
-
-                        {/* Match Statistics */}
-                        <div className="glassmorphism rounded-2xl p-4 sm:p-6 shadow-xl">
-                            <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-800 text-center">Statistiche Match</h3>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 text-center">
-                                <div className="p-3 sm:p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl">
-                                    <div className="text-xl sm:text-2xl font-bold text-emerald-600">{score.team1.sets}</div>
-                                    <div className="text-xs sm:text-sm text-gray-600">Set {team1Name}</div>
-                                </div>
-                                <div className="p-3 sm:p-4 bg-gradient-to-br from-teal-50 to-teal-100 rounded-xl">
-                                    <div className="text-xl sm:text-2xl font-bold text-teal-600">{score.team2.sets}</div>
-                                    <div className="text-xs sm:text-sm text-gray-600">Set {team2Name}</div>
-                                </div>
-                                <div className="p-3 sm:p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl">
-                                    <div className="text-xl sm:text-2xl font-bold text-blue-600">{gameHistory.length}</div>
-                                    <div className="text-xs sm:text-sm text-gray-600">Punti Totali</div>
-                                </div>
-                                <div className="p-3 sm:p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
-                                    <div className="text-xl sm:text-2xl font-bold text-purple-600">{score.team1.games + score.team2.games}</div>
-                                    <div className="text-xs sm:text-sm text-gray-600">Game Giocati</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Set Details */}
-                        {setScores.length > 0 && (
-                            <div className="mt-4">
-                                <h4 className="text-sm sm:text-base font-semibold text-gray-700 text-center mb-2">Dettaglio Set</h4>
-                                <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 text-sm sm:text-base text-gray-800">
-                                    {setScores.map((set, index) => (
-                                        <div key={index} className="px-3 py-2 bg-white/60 rounded-xl shadow text-center min-w-[80px]">
-                                            <div className="font-semibold text-gray-600">Set {index + 1}</div>
-                                            <div className="font-bold">{set.team1} – {set.team2}</div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
                     </div>
+
+                    {/* Deuce/Advantage Indicator */}
+                    {score.team1.points >= 3 && score.team2.points >= 3 && (
+                        <div className="deuce-indicator">
+                            {score.team1.points === score.team2.points ? 'DEUCE' : 
+                             score.team1.points > score.team2.points ? 'ADV P1' : 'ADV P2'}
+                        </div>
+                    )}
                 </div>
             );
         }
