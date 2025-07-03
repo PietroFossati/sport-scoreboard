@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Padel Scoreboard Responsive</title>
+    <title>Padel Scoreboard Smartwatch</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -13,20 +13,19 @@
             padding: 0;
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #1e3c72, #2a5298);
-            min-height: 100vh;
+            width: 400px;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* Layout Desktop/Tablet (default) */
         .container {
-            width: 100%;
-            max-width: 800px;
-            height: auto;
-            min-height: 600px;
-            padding: 20px;
-            border-radius: 20px;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
             position: relative;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -34,47 +33,103 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            padding: 0;
         }
 
-        .score-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
+        .reset-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .reset-btn:active {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .winner-banner {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 215, 0, 0.95);
+            color: black;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .score-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
             width: 100%;
-            max-width: 600px;
+            max-width: 350px;
+        }
+
+        .player-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .player-name {
+            font-size: 20px;
+            font-weight: bold;
+            width: 40px;
             text-align: center;
         }
 
-        .player-section h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
+        .player-name.p1 { color: #4ade80; }
+        .player-name.p2 { color: #06b6d4; }
+
+        .score-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            justify-content: center;
         }
 
-        .score-display {
-            margin-bottom: 20px;
+        .score-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
         }
 
-        .score-display .label {
-            font-size: 14px;
+        .score-label {
+            font-size: 10px;
             opacity: 0.8;
-            margin-bottom: 5px;
+            text-transform: uppercase;
         }
 
-        .score-display .value {
-            font-size: 48px;
+        .score-value {
+            font-size: 24px;
             font-weight: bold;
+            line-height: 1;
         }
 
-        .score-display .value.sets.p1 { color: #4ade80; }
-        .score-display .value.sets.p2 { color: #06b6d4; }
-
-        .score-display .value.games { font-size: 32px; }
-        .score-display .value.points { font-size: 28px; }
+        .score-value.sets.p1 { color: #4ade80; }
+        .score-value.sets.p2 { color: #06b6d4; }
 
         .controls {
             display: flex;
-            gap: 15px;
-            justify-content: center;
+            gap: 8px;
+            align-items: center;
         }
 
         .btn-plus, .btn-minus {
@@ -83,159 +138,57 @@
             border-radius: 50%;
             cursor: pointer;
             font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .btn-plus {
-            width: 60px;
-            height: 60px;
-            font-size: 32px;
+            width: 55px;
+            height: 55px;
+            font-size: 28px;
         }
 
         .btn-plus.p1 { background: #4ade80; }
         .btn-plus.p2 { background: #06b6d4; }
 
+        .btn-plus:active {
+            transform: scale(0.95);
+        }
+
         .btn-minus {
-            width: 45px;
-            height: 45px;
-            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
             background: rgba(255, 255, 255, 0.3);
         }
 
-        .top-controls {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+        .btn-minus:active {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(0.95);
         }
 
-        .reset-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .winner-banner {
-            position: absolute;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 215, 0, 0.9);
-            color: black;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 18px;
-            font-weight: bold;
-            z-index: 10;
+        .btn-plus:disabled, .btn-minus:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .deuce-indicator {
             position: absolute;
-            bottom: 60px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 16px;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 14px;
             font-weight: bold;
+            z-index: 5;
         }
 
-        /* Media Query per Display Circolare (400x400 o meno) */
-        @media (max-width: 450px), (max-height: 450px) {
-            body {
-                background: linear-gradient(135deg, #1e3c72, #2a5298);
-                width: 400px;
-                height: 400px;
-                overflow: hidden;
-                border-radius: 50%;
-            }
-
-            .container {
-                width: 400px;
-                height: 400px;
-                border-radius: 50%;
-                overflow: hidden;
-                padding: 0;
-                min-height: unset;
-                max-width: unset;
-            }
-
-            .score-grid {
-                gap: 20px;
-                width: 350px;
-                max-width: unset;
-            }
-
-            .player-section h2 {
-                font-size: 18px;
-                margin-bottom: 10px;
-            }
-
-            .score-display {
-                margin-bottom: 15px;
-            }
-
-            .score-display .label {
-                font-size: 12px;
-            }
-
-            .score-display .value {
-                font-size: 36px;
-            }
-
-            .score-display .value.games {
-                font-size: 24px;
-            }
-
-            .score-display .value.points {
-                font-size: 20px;
-            }
-
-            .controls {
-                gap: 8px;
-            }
-
-            .btn-plus {
-                width: 45px;
-                height: 45px;
-                font-size: 24px;
-            }
-
-            .btn-minus {
-                width: 35px;
-                height: 35px;
-                font-size: 20px;
-            }
-
-            .top-controls {
-                top: 10px;
-                right: 10px;
-            }
-
-            .reset-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-            }
-
-            .winner-banner {
-                top: 20px;
-                padding: 8px 16px;
-                font-size: 14px;
-            }
-
-            .deuce-indicator {
-                bottom: 40px;
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-        }
-
-        /* Media Query per schermi molto piccoli (sotto 350px) */
+        /* Responsive per schermi ancora più piccoli */
         @media (max-width: 350px), (max-height: 350px) {
             body {
                 width: 300px;
@@ -247,21 +200,33 @@
                 height: 300px;
             }
 
-            .score-grid {
-                width: 260px;
-                gap: 15px;
+            .score-section {
+                max-width: 260px;
+                gap: 20px;
             }
 
-            .score-display .value {
-                font-size: 28px;
+            .player-row {
+                padding: 0 15px;
             }
 
-            .score-display .value.games {
+            .player-name {
+                font-size: 18px;
+            }
+
+            .score-value {
                 font-size: 20px;
             }
 
-            .score-display .value.points {
-                font-size: 16px;
+            .btn-plus {
+                width: 45px;
+                height: 45px;
+                font-size: 24px;
+            }
+
+            .btn-minus {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
             }
         }
     </style>
@@ -374,57 +339,44 @@
 
             return (
                 <div className="container">
-                    {/* Winner */}
+                    {/* Reset Button */}
+                    <button onClick={resetMatch} className="reset-btn">
+                        ↻
+                    </button>
+
+                    {/* Winner Banner */}
                     {matchComplete && winner && (
                         <div className="winner-banner">
                             🏆 {winner} WINS!
                         </div>
                     )}
 
-                    {/* Reset Button */}
-                    <div className="top-controls">
-                        <button onClick={resetMatch} className="reset-btn">
-                            ↻
-                        </button>
-                    </div>
-
-                    {/* Main Score Display */}
-                    <div className="score-grid">
-                        {/* Player 1 */}
-                        <div className="player-section">
-                            <h2>P1</h2>
+                    {/* Score Section */}
+                    <div className="score-section">
+                        {/* Player 1 Row */}
+                        <div className="player-row">
+                            <div className="player-name p1">P1</div>
                             
-                            {/* Sets */}
-                            <div className="score-display">
-                                <div className="label">SET</div>
-                                <div className="value sets p1">
-                                    {score.team1.sets}
+                            <div className="score-info">
+                                <div className="score-item">
+                                    <div className="score-label">Set</div>
+                                    <div className="score-value sets p1">{score.team1.sets}</div>
                                 </div>
-                            </div>
-                            
-                            {/* Games */}
-                            <div className="score-display">
-                                <div className="label">GAME</div>
-                                <div className="value games">
-                                    {score.team1.games}
+                                <div className="score-item">
+                                    <div className="score-label">Game</div>
+                                    <div className="score-value">{score.team1.games}</div>
                                 </div>
-                            </div>
-                            
-                            {/* Points */}
-                            <div className="score-display">
-                                <div className="label">PUNTI</div>
-                                <div className="value points">
-                                    {getPointDisplay(score.team1.points)}
+                                <div className="score-item">
+                                    <div className="score-label">Punti</div>
+                                    <div className="score-value">{getPointDisplay(score.team1.points)}</div>
                                 </div>
                             </div>
 
-                            {/* Controls */}
                             <div className="controls">
                                 <button
                                     onClick={() => addPoint('team1')}
                                     disabled={matchComplete}
                                     className="btn-plus p1"
-                                    style={{ opacity: matchComplete ? 0.5 : 1 }}
                                 >
                                     +
                                 </button>
@@ -432,48 +384,36 @@
                                     onClick={() => removePoint('team1')}
                                     disabled={matchComplete}
                                     className="btn-minus"
-                                    style={{ opacity: matchComplete ? 0.5 : 1 }}
                                 >
                                     −
                                 </button>
                             </div>
                         </div>
 
-                        {/* Player 2 */}
-                        <div className="player-section">
-                            <h2>P2</h2>
+                        {/* Player 2 Row */}
+                        <div className="player-row">
+                            <div className="player-name p2">P2</div>
                             
-                            {/* Sets */}
-                            <div className="score-display">
-                                <div className="label">SET</div>
-                                <div className="value sets p2">
-                                    {score.team2.sets}
+                            <div className="score-info">
+                                <div className="score-item">
+                                    <div className="score-label">Set</div>
+                                    <div className="score-value sets p2">{score.team2.sets}</div>
                                 </div>
-                            </div>
-                            
-                            {/* Games */}
-                            <div className="score-display">
-                                <div className="label">GAME</div>
-                                <div className="value games">
-                                    {score.team2.games}
+                                <div className="score-item">
+                                    <div className="score-label">Game</div>
+                                    <div className="score-value">{score.team2.games}</div>
                                 </div>
-                            </div>
-                            
-                            {/* Points */}
-                            <div className="score-display">
-                                <div className="label">PUNTI</div>
-                                <div className="value points">
-                                    {getPointDisplay(score.team2.points)}
+                                <div className="score-item">
+                                    <div className="score-label">Punti</div>
+                                    <div className="score-value">{getPointDisplay(score.team2.points)}</div>
                                 </div>
                             </div>
 
-                            {/* Controls */}
                             <div className="controls">
                                 <button
                                     onClick={() => addPoint('team2')}
                                     disabled={matchComplete}
                                     className="btn-plus p2"
-                                    style={{ opacity: matchComplete ? 0.5 : 1 }}
                                 >
                                     +
                                 </button>
@@ -481,7 +421,6 @@
                                     onClick={() => removePoint('team2')}
                                     disabled={matchComplete}
                                     className="btn-minus"
-                                    style={{ opacity: matchComplete ? 0.5 : 1 }}
                                 >
                                     −
                                 </button>
